@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest";
 import { createHistory } from "../src/history.js";
 
 describe("history", () => {
-  it("exposes a function placeholder", () => {
-    expect(typeof createHistory).toBe("function");
+  it("createHistory 함수가 export된다", () => {
+    // given
+
+    // when
+    const actual = typeof createHistory;
+
+    // then
+    expect(actual).toBe("function");
   });
 });
