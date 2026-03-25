@@ -1,13 +1,13 @@
 ---
 name: gh-create-pr
-description: Create a polished Korean GitHub pull request from rough user notes, always ask for the PR title and description first, assign it to the authenticated user, and include a Closes #123 footer derived from the current type-#123 branch. Use when the user wants to open a PR with gh after work is already on an issue-linked branch.
+description: "Create a polished Korean GitHub pull request from rough user notes, always ask for the PR title, PR description, and type prefix first, format the final PR title as feat: ..., assign it to the authenticated user, and include a Closes #123 footer derived from the current type-#123 branch. Use when the user wants to open a PR with gh after work is already on an issue-linked branch."
 ---
 
 # Gh Create Pr
 
 ## Goal
 
-Turn rough PR notes into a clean Korean pull request, always collect the PR title and description first, make sure the current branch is pushed to `origin`, assign the PR to the authenticated user, and include a GitHub-closing footer like `Closes #4` based on the current branch name.
+Turn rough PR notes into a clean Korean pull request, always collect the PR title, PR description, and type prefix first, format the final PR title as `<prefix>: <clean Korean title>`, make sure the current branch is pushed to `origin`, assign the PR to the authenticated user, and include a GitHub-closing footer like `Closes #4` based on the current branch name.
 
 ## Workflow Gate
 
@@ -19,9 +19,10 @@ Use this skill when the implementation work is already on an issue-linked branch
 
 ## Core Rules
 
-- Always ask the user for the PR title and PR description in normal chat before drafting the final PR. Do not assume `request_user_input` is available.
+- Always ask the user for the PR title, PR description, and type prefix in normal chat before drafting the final PR. Do not assume `request_user_input` is available.
 - Ask for all required inputs in a single short message.
 - Write the PR title and body in Korean by default. If the user provides rough notes in English, translate them into natural Korean unless the user explicitly asks for another language.
+- Ask for a type prefix such as `feat`, `fix`, `bug`, `docs`, `refactor`, or `test`, and use that prefix at the start of the final PR title.
 - Keep code identifiers, commands, API names, class names, and branch names unchanged when translating them would reduce precision.
 - Assign the PR to the authenticated GitHub user by default with `--assignee "@me"`. Only skip or change the assignee when the user explicitly asks for that.
 - Include `Closes #<issue-number>` in the PR body. Use `Closes`, not `closed`, so GitHub will close the linked issue automatically on merge.
@@ -34,6 +35,7 @@ Collect these inputs before creating the PR:
 
 - rough PR title
 - rough PR description
+- type prefix for the PR title, default `feat`
 - optional base branch override
 - optional PR assignee override, default `@me`
 - optional issue number override when the current branch does not contain one
@@ -43,18 +45,22 @@ Always ask once with a compact template like:
 ```text
 아래 형식으로 PR 초안을 보내주세요.
 
-PR 제목 초안:
-PR 설명 초안:
+제목 초안:
+설명 초안:
+타입 prefix(기본값: feat):
 Base branch(선택):
 Assignee(기본값: @me):
 Issue 번호 override(현재 브랜치에서 못 찾을 때만):
 ```
+
+If the user already supplied free-form notes, still ask them to confirm the title, description, and prefix explicitly before creating the PR.
 
 ## Draft The Pull Request
 
 Rewrite the PR in Korean before creating it.
 
 - Make the title short, specific, and action-oriented in Korean.
+- Convert the final PR title to `<prefix>: <clean Korean title>`.
 - Prefer a body with stable Korean headings.
 - Keep the change summary and testing notes concrete.
 - Move uncertainty into `비고` instead of presenting guesses as facts.
