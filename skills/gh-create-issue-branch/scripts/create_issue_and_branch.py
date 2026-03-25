@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Create a GitHub issue with gh and switch to a branch named feature-#<issue>.
+Create a GitHub issue with gh and switch to a branch named <type>-#<issue>.
 
 The script uses subprocess argument lists rather than a shell string so branch
 names containing "#" stay safe and predictable.
@@ -141,13 +141,13 @@ def push_branch(branch_name: str) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Create a GitHub issue and switch to feature-#<issue>.",
+        description="Create a GitHub issue and switch to <type>-#<issue>.",
     )
     parser.add_argument("--title", help="Issue title. Required unless --issue-number is provided.")
     parser.add_argument("--body", help="Issue body as a string.")
     parser.add_argument("--body-file", help="Path to a Markdown file for the issue body.")
     parser.add_argument("--repo", help="Optional gh repo override in owner/name form.")
-    parser.add_argument("--prefix", default="feature", help="Branch prefix. Defaults to 'feature'.")
+    parser.add_argument("--prefix", default="feat", help="Branch type prefix. Defaults to 'feat'.")
     parser.add_argument(
         "--assignee",
         default="@me",

@@ -227,7 +227,7 @@ def main() -> None:
     if issue_number is None:
         fail(
             "Could not infer an issue number from the current branch.\n"
-            "Use a branch like feature-#4 or pass --issue-number explicitly."
+            "Use a branch like feat-#4 or pass --issue-number explicitly."
         )
 
     assignee = None if args.no_assignee else args.assignee.strip()
