@@ -35,13 +35,12 @@ src/
   lib.js
 tests/
   lib/
-    domToVdom/
-    vdomToDom/
-    renderTo/
-    diff/
-    applyPatches/
-  history/
-    createHistory/
+    domToVdom.test.js
+    vdomToDom.test.js
+    renderTo.test.js
+    diff.test.js
+    applyPatches.test.js
+  history.test.js
 ```
 
 ## 3. `package.json` 기준
@@ -195,12 +194,12 @@ export function createHistory(initialVdom) {
 
 테스트 코드는 `src` 바깥의 별도 `tests/` 폴더에서 관리한다.
 
-- `tests/lib/domToVdom/`는 `src/lib/domToVdom.js`를 본다.
-- `tests/lib/vdomToDom/`는 `src/lib/vdomToDom.js`를 본다.
-- `tests/lib/renderTo/`는 `src/lib/renderTo.js`를 본다.
-- `tests/lib/diff/`는 `src/lib/diff.js`를 본다.
-- `tests/lib/applyPatches/`는 `src/lib/applyPatches.js`를 본다.
-- `tests/history/createHistory/`는 `src/history.js`를 본다.
+- `tests/lib/domToVdom.test.js`는 `src/lib/domToVdom.js`를 본다.
+- `tests/lib/vdomToDom.test.js`는 `src/lib/vdomToDom.js`를 본다.
+- `tests/lib/renderTo.test.js`는 `src/lib/renderTo.js`를 본다.
+- `tests/lib/diff.test.js`는 `src/lib/diff.js`를 본다.
+- `tests/lib/applyPatches.test.js`는 `src/lib/applyPatches.js`를 본다.
+- `tests/history.test.js`는 `src/history.js`를 본다.
 
 담당자 기준은 아래처럼 맞춘다.
 
@@ -208,10 +207,9 @@ export function createHistory(initialVdom) {
 - 이진혁: `diff`, `applyPatches`
 - 양시준: `createHistory`, 데모 UI
 
-각 담당자는 자기 범위 파일 이름에 맞는 테스트를 직접 추가하고 확장한다.
+각 담당자는 자기 범위 파일 이름에 맞는 테스트 파일을 직접 추가하고 확장한다.
 
-- 테스트 폴더 이름은 대상 소스 파일 이름과 맞춘다.
-- 각 폴더 안에는 필요한 만큼 개별 테스트케이스 파일을 추가한다.
+- 테스트 파일 이름은 대상 소스 파일 이름에 `.test.js`를 붙여 맞춘다.
 - 공용 테스트 파일 하나에 모두 몰아넣지 않는다.
 - `src/lib.js` 자체는 집합 진입점이므로 전용 테스트 대상이라기보다 개별 기능 파일 테스트를 통해 검증한다.
 
