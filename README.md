@@ -28,13 +28,13 @@ sequenceDiagram
     participant Flush as flushEffects()
 
     Render->>Hook: effect slot 확보
-    Render->>Queue: deps 변경 시 effect 예약
+    Render->>Queue: dependency array 변경 시 effect 예약
     Render-->>DOM: next VDOM 생성 완료
     DOM->>DOM: 실제 DOM 반영
     DOM->>Flush: commit 완료
     Flush->>Hook: 이전 cleanup 실행
     Flush->>Hook: 새 effect 실행
-    Flush->>Hook: cleanup / deps 저장
+    Flush->>Hook: cleanup / dependency array 저장
 ```
 
 
