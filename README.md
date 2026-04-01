@@ -99,32 +99,21 @@ sequenceDiagram
 
 ## Development Cycles
 
+
+조금 더 한국어 느낌으로 바꾸면 이 버전도 괜찮습니다.
+
+```md
+## Development Cycles
+
 ```mermaid
-flowchart LR
-    A["10:00 - 11:00<br/><b>Requirement Analysis</b><br/>요구사항 이해 및 정리"]
-    B["11:10 - 12:15<br/><b>Core Concepts</b><br/>Component, State, Hook 개념 이해"]
-    C["13:10 - 14:55<br/><b>Question-driven Study</b><br/>Component, Rendering, State 질문 학습 + 공유"]
-    D["15:00 - 16:10<br/><b>Function Component / useState</b><br/>질문 학습 + 상호 설명"]
-    E["16:20 - 17:35<br/><b>useEffect / useMemo / Event Flow</b><br/>심화 학습 + Q&A"]
-    F["19:30 - 21:00<br/><b>Implementation</b><br/>개인 구현 + 추가 구현"]
-    G["21:00 - 22:45<br/><b>Project Direction</b><br/>Base project 선정 + README 작성"]
-    H["22:45 - 24:00<br/><b>Final Sharing & Integration</b><br/>서로 설명 후 통합"]
+pie showData
+    title 수요 코딩회 작업 비중 (총 640분)
+    "요구사항 정리 + 개념 학습 (305분)" : 305
+    "공유 + 질문 (100분)" : 100
+    "구현 (90분)" : 90
+    "베이스 프로젝트 선정 (30분)" : 30
+    "README 작성 (75분)" : 75
+    "통합 (40분)" : 40
 
-    A --> B --> C --> D --> E --> F --> G --> H
-    H -. feedback .-> C
-    G -. refine .-> F
-    E -. apply .-> F
-
-    classDef phase fill:#F8FAFC,stroke:#334155,stroke-width:1.5px,color:#0F172A,rx:18,ry:18;
-    classDef study fill:#FEF3C7,stroke:#D97706,stroke-width:1.5px,color:#78350F;
-    classDef build fill:#DCFCE7,stroke:#16A34A,stroke-width:1.5px,color:#14532D;
-    classDef docs fill:#EDE9FE,stroke:#7C3AED,stroke-width:1.5px,color:#4C1D95;
-    classDef final fill:#DBEAFE,stroke:#2563EB,stroke-width:1.5px,color:#1E3A8A;
-
-    class A phase
-    class B,C,D,E study
-    class F build
-    class G docs
-    class H final
 
  
