@@ -1,150 +1,135 @@
-# DOM-VDOM 프로젝트
+# Mini React from Virtual DOM
 
-## 프로젝트 개요
+기존에 구현해 둔 `Virtual DOM + diff + patch` 엔진 위에, 이번 주 과제 요구사항인 `Component`, `State`, `Hooks`를 직접 얹은 프로젝트입니다. 결과물은 단순한 카운터가 아니라, 사용자 입력과 필터링, 상태 토글, `useMemo`, `useEffect`, 디버그 패널까지 한 번에 검증할 수 있는 `수요 코딩회 보드`입니다.
 
-- DOM과 Virtual DOM 사이의 핵심 흐름을 직접 구현하고, 변경 사항을 안전하게 반영하는 과정을 하나의 결과물로 정리한 프로젝트입니다. 
-- `domToVdom`, `vdomToDom`, `diff`, `applyPatches`, `renderTo`, `createHistory`를 기능별로 분리해 구현
-- 최종적으로는 `history`와 UI를 연결해 상태 변화와 결과를 직접 확인할 수 있는 데모 화면까지 구성
+## 구현 범위
 
-## 기능 테스트
+- 루트 전용 런타임 API
+  - `createElement`
+  - `FunctionComponent`
+  - `useState`
+  - `useEffect`
+  - `useMemo`
+- 기존 VDOM 엔진 재사용
+  - `vdomToDom`
+  - `diff`
+  - `applyPatches`
+  - `renderTo`
+- 테스트 페이지
+  - 작업 추가
+  - 완료 토글
+  - 팀/상태 필터
+  - 검색
+  - 정렬
+  - `localStorage` 저장/복원
+  - `document.title` 갱신
+  - 런타임 디버그 패널
 
-- 기능 구현은 모듈 단위로 나누어 검증했습니다. 각 기능이 독립적으로 올바르게 동작하는지 확인하는 동시에, 실제 사용 과정에서 발생할 수 있는 경계 조건도 함께 테스트
-- 구현 모듈: `domToVdom`, `vdomToDom`, `diff`, `applyPatches`, `renderTo`, `createHistory`
-- 테스트 범위: DOM-VDOM 변환, 변경 사항 계산, patch 적용, 렌더링, history 관리
-- 검증 포인트: 루트 교체, 잘못된 입력 처리, 엣지 케이스, undo/redo 흐름
+## 핵심 제약
 
-<br/>
-<br/>
+- Hook은 루트 컴포넌트에서만 사용할 수 있습니다.
+- 자식 컴포넌트는 모두 `props`만 받는 stateless pure function입니다.
+- 모든 상태는 루트 컴포넌트에서만 관리합니다.
+- 상태 변경 시 흐름은 `새 vnode 생성 -> diff -> patch -> effect flush` 입니다.
+- batching은 넣지 않았고, 성공한 `setState`마다 루트 `update()`를 1회 실행합니다.
 
-### 기능 테스트 결과 화면
-<img width="826" height="736" alt="image" src="https://github.com/user-attachments/assets/e834d105-8bea-4135-a412-0837d94acf20" />
+## 화면 구성
 
+- 메인 앱: `수요 코딩회 보드`
+  - 팀별 작업을 추가하고 완료 여부를 바꿀 수 있습니다.
+  - 필터, 검색, 정렬 결과는 `useMemo`로 계산합니다.
+  - 남은 작업 수는 `useEffect`로 `document.title`에 반영합니다.
+  - 작업 목록은 `useEffect`로 `localStorage`에 저장합니다.
+- 디버그 패널
+  - render count
+  - hook slot 요약
+  - patch log
+  - effect log
 
+## 파일 구조
 
-## 협업 방식
+```text
+src/
+  app/
+    codingBoardApp.js
+    mountCodingBoard.js
+  runtime/
+    index.js
+  lib/
+    diff.js
+    applyPatches.js
+    vdomToDom.js
+    renderTo.js
+  constants.js
+  lib.js
+  main.js
+tests/
+  runtime/
+  integration/
+  lib/
+  cases/
+```
 
-- 기능을 역할별로 분리해 병렬로 진행한 뒤, 브랜치와 PR을 통해 통합하는 방식으로 운영 
-- 위승철: `domToVdom`, `vdomToDom`, `renderTo`, 테스트 보강
-- 이진혁: `diff`, `applyPatches`
-- 양시준: `createHistory`, 데모 UI, 전체 통합
+## TDD 진행 방식
 
+이번 작업은 기능마다 아래 순서를 고정해서 진행했습니다.
 
+1. `tests/cases/*.csv`에 테스트 케이스를 먼저 기록
+2. 기능별 테스트 파일에 실패하는 테스트를 먼저 작성
+3. 최소 구현으로 테스트 통과
+4. 리팩터링
+5. 전체 회귀 테스트 확인
 
-<br/>
-<br/>
+기능별 테스트는 각각 한 파일에서 확인할 수 있게 분리했습니다.
 
-### 브랜치와 PR 기반 협업 흐름
-<img width="1440" height="1050" alt="image" src="https://github.com/user-attachments/assets/d9cb1806-d6ed-492e-8f3f-2ee4fc561119" />
+- `tests/runtime/createElement.test.js`
+- `tests/runtime/events.test.js`
+- `tests/runtime/functionComponent.test.js`
+- `tests/runtime/useState.test.js`
+- `tests/runtime/useEffect.test.js`
+- `tests/runtime/useMemo.test.js`
+- `tests/integration/codingBoard.test.js`
 
-<img width="4320" height="2328" alt="image" src="https://github.com/user-attachments/assets/1ead4ce6-22e6-45f3-8c2f-1a9034470a91" />
+CSV 기록 파일도 테스트 파일과 1:1 대응으로 유지합니다.
 
+- `tests/cases/createElement.csv`
+- `tests/cases/events.csv`
+- `tests/cases/functionComponent.csv`
+- `tests/cases/useState.csv`
+- `tests/cases/useEffect.csv`
+- `tests/cases/useMemo.csv`
+- `tests/cases/codingBoard.csv`
 
+CSV 컬럼은 아래 형식으로 통일했습니다.
 
-<br/>
-<br/>
+```text
+feature,case_id,scenario,given,when,then,priority,status,test_file
+```
 
-### git 이슈 생성 스킬
-<img width="1504" height="546" alt="image" src="https://github.com/user-attachments/assets/47f94957-95b8-46d1-a492-ff348044a11f" />
-<img width="1504" height="576" alt="image" src="https://github.com/user-attachments/assets/1f02c1cd-0fbd-4e5e-8314-498b3dc64468" />
-<img width="1265" height="870" alt="image" src="https://github.com/user-attachments/assets/41c47bec-189f-4904-b492-dff079816d49" />
+## 테스트 포인트
 
+- `createElement` children 정규화와 함수형 자식 컴포넌트 해석
+- 이벤트 props 등록/교체/제거
+- `FunctionComponent` mount/update와 patch 흐름
+- `useState` 상태 유지, functional update, same-value no-op
+- `useEffect` deps 비교, cleanup, skip 동작
+- `useMemo` 캐시 재사용과 재계산 조건
+- 보드 앱의 추가/토글/필터/검색/정렬/저장/복원/디버그 패널
+- 기존 VDOM 엔진 회귀 테스트
 
+## 실행 방법
 
-## 데모 및 결과 확인
+```bash
+npm install
+npm test -- --run
+npm run dev
+```
 
-- 최종 결과물은 기능 구현에서 끝나지 않고, 사용자가 상태 변화와 결과를 직접 확인할 수 있는 데모 화면까지 포함
-- `history`와 UI를 연결해 undo/redo 흐름을 시각적으로 확인할 수 있도록 구성했고, snapshot 기반 상태 관리가 실제로 어떻게 동작하는지 한눈에 파악
+브라우저에서 실행하면 왼쪽에는 보드 앱, 오른쪽에는 런타임 디버그 패널이 표시됩니다.
 
-# 테스트
+## 실제 React와의 차이
 
-## History
-
-
-| Test Case                        | Status |
-| -------------------------------- | ------ |
-| createHistory 함수 export          | ✅      |
-| 초기 snapshot 상태 설정                | ✅      |
-| undo / redo 이동                   | ✅      |
-| undo 후 새 snapshot push 시 redo 제거 | ✅      |
-| 외부 수정에도 내부 history 불변성 유지        | ✅      |
-
-
-## 2. DOM → VDOM
-
-
-| Test Case        | Status |
-| ---------------- | ------ |
-| domToVdom export | ✅      |
-| Text node 변환     | ✅      |
-| Element 트리 변환    | ✅      |
-| comment node 무시  | ✅      |
-
-
-## 3. VDOM → DOM
-
-
-| Test Case                 | Status |
-| ------------------------- | ------ |
-| vdomToDom export          | ✅      |
-| Text vnode → Text DOM     | ✅      |
-| props + children 렌더링      | ✅      |
-| 중첩 vnode 재귀 처리            | ✅      |
-| invalid vnode → TypeError | ✅      |
-
-
-## 4. Diff
-
-
-| Test Case                     | Status |
-| ----------------------------- | ------ |
-| diff export                   | ✅      |
-| props / text / children 변경 감지 | ✅      |
-| node type 변경 처리               | ✅      |
-| invalid vnode → TypeError     | ✅      |
-
-
-## 5. Patch
-
-
-| Test Case                     | Status |
-| ----------------------------- | ------ |
-| diff export                   | ✅      |
-| props / text / children 변경 감지 | ✅      |
-| node type 변경 처리               | ✅      |
-| invalid vnode → TypeError     | ✅      |
-
-
-## 6. Render
-
-
-| Test Case         | Status |
-| ----------------- | ------ |
-| renderTo export   | ✅      |
-| 초기 렌더             | ✅      |
-| 전체 교체 렌더          | ✅      |
-| round-trip 일관성 유지 | ✅      |
-
-
-## 7. Edge Cases
-
-
-| Category          | Description                | Status |
-| ----------------- | -------------------------- | ------ |
-| Partial update    | 변경된 leaf만 patch 생성         | ✅      |
-| DOM reuse         | 형제 노드 identity 유지          | ✅      |
-| No-op             | 동일 vnode → 빈 patch         | ✅      |
-| Subtree removal   | 부모 삭제 시 안전 정리              | ✅      |
-| Root ops          | root replace/remove/add 처리 | ✅      |
-| Front insertion   | DOM 결과는 맞고 identity 일부 손실  | ✅      |
-| Reorder           | move 없이 index 기반 처리        | ✅      |
-| Invalid vnode     | 모든 API에서 TypeError         | ✅      |
-| Invalid patch     | 잘못된 patch → TypeError      | ✅      |
-| Invalid path      | 존재하지 않는 경로 무시              | ✅      |
-| Prop removal      | undefined 처리 및 DOM 반영      | ✅      |
-| Prop types        | boolean/null/undefined 처리  | ✅      |
-| class handling    | className canonicalize     | ✅      |
-| Attribute support | data-*, aria-*, style 등    | ✅      |
-| Void elements     | 자식 없이 처리                   | ✅      |
-| Empty text        | "", null → "" 정규화          | ✅      |
-
-
+- Fiber, concurrent rendering, batching, scheduler는 구현하지 않았습니다.
+- Hook 규칙 검사도 최소 수준입니다.
+- reconciliation은 key 기반이 아니라 현재 프로젝트의 index 기반 diff를 따릅니다.
+- 하지만 상태 유지, deps 비교, cleanup, memo cache, patch 기반 DOM 업데이트라는 핵심 학습 포인트는 직접 확인할 수 있습니다.

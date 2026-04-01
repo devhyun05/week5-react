@@ -3,523 +3,412 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Virtual DOM Diff &amp; Patch Demo</title>
+    <title>수요 코딩회 보드</title>
     <style>
+      :root {
+        --bg: #f4f1e8;
+        --surface: rgba(255, 255, 255, 0.82);
+        --surface-strong: #fffdf8;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --line: rgba(115, 125, 140, 0.22);
+        --accent: #cf5c36;
+        --accent-soft: #f7dccf;
+        --shadow: 0 24px 60px rgba(36, 39, 46, 0.14);
+        --radius: 24px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        margin: 24px;
-        font-family: "Pretendard", "Noto Sans KR", sans-serif;
+        margin: 0;
+        font-family: "SUIT Variable", "Pretendard", "Noto Sans KR", sans-serif;
         line-height: 1.5;
-        background: #f7f7f5;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(207, 92, 54, 0.14), transparent 30%),
+          radial-gradient(circle at top right, rgba(43, 90, 148, 0.12), transparent 28%),
+          linear-gradient(180deg, #f8f5ee 0%, #ece7dc 100%);
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .page-shell {
+        width: min(1240px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 40px 0 56px;
+      }
+
+      .page-intro {
+        margin-bottom: 24px;
+      }
+
+      .page-intro p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .page-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+        gap: 20px;
+        align-items: start;
+      }
+
+      .mount-card {
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: var(--surface);
+        backdrop-filter: blur(16px);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      #app-root,
+      #debug-root {
+        padding: 22px;
+      }
+
+      .board-app {
+        display: grid;
+        gap: 18px;
+      }
+
+      .app-hero,
+      .surface-card,
+      .summary-card,
+      .task-card,
+      .debug-panel,
+      .empty-state {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface-strong);
+        box-shadow: 0 16px 40px rgba(31, 41, 55, 0.08);
+      }
+
+      .app-hero {
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
       h1,
-      h2 {
-        margin-top: 0;
-      }
-
-      .toolbar {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 16px;
-      }
-
-      .container {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
-      }
-
-      .panel {
-        min-height: 220px;
-        padding: 16px;
-        border: 1px solid #d0d0d0;
-        border-radius: 8px;
-        background: #fff;
-      }
-
-      #test-area {
-        outline: none;
-      }
-
-      .history-section {
-        margin-top: 24px;
-      }
-
-      .history-list {
+      h2,
+      h3,
+      p {
         margin: 0;
-        padding: 0;
-        list-style: none;
       }
 
-      .history-list li {
+      h1 {
+        font-size: clamp(28px, 4vw, 42px);
+        line-height: 1.1;
+      }
+
+      h2 {
+        font-size: 20px;
+        margin-bottom: 14px;
+      }
+
+      h3 {
+        font-size: 15px;
+      }
+
+      .hero-description {
+        max-width: 56ch;
+        margin-top: 12px;
+        color: var(--muted);
+      }
+
+      .hero-badges {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .badge,
+      .priority-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .badge {
+        background: var(--accent-soft);
+        color: #8a371d;
+      }
+
+      .summary-grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .summary-card {
+        padding: 18px 20px;
+      }
+
+      .summary-label {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
         margin-bottom: 8px;
       }
 
-      .history-toggle {
+      .summary-value {
+        font-size: 32px;
+      }
+
+      .board-content {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: minmax(320px, 1fr) minmax(0, 1.3fr);
+      }
+
+      .board-left,
+      .board-right {
+        display: grid;
+        gap: 18px;
+        align-content: start;
+      }
+
+      .surface-card {
+        padding: 20px;
+      }
+
+      .field-grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .field-grid.compact {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .field-search {
+        grid-column: span 2;
+      }
+
+      .text-input,
+      .select-input,
+      .primary-button,
+      .ghost-button {
         width: 100%;
+        border-radius: 16px;
+        border: 1px solid rgba(115, 125, 140, 0.24);
+        transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+      }
+
+      .text-input,
+      .select-input {
+        min-height: 46px;
+        padding: 0 14px;
+        background: #fff;
+      }
+
+      .text-input:focus,
+      .select-input:focus {
+        outline: none;
+        border-color: rgba(207, 92, 54, 0.55);
+        box-shadow: 0 0 0 4px rgba(207, 92, 54, 0.12);
+      }
+
+      .primary-button,
+      .ghost-button {
+        cursor: pointer;
+      }
+
+      .primary-button {
+        margin-top: 16px;
+        padding: 14px 18px;
+        color: white;
+        background: linear-gradient(135deg, #cf5c36 0%, #b64723 100%);
+      }
+
+      .primary-button:hover,
+      .ghost-button:hover {
+        transform: translateY(-1px);
+      }
+
+      .filter-header,
+      .task-panel-header,
+      .debug-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .filter-count,
+      .task-panel-meta {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .task-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .task-card {
+        padding: 18px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .task-card.done {
+        background: #f7f4ec;
+      }
+
+      .task-card-top,
+      .task-card-bottom {
         display: flex;
         justify-content: space-between;
         gap: 12px;
-        padding: 12px 14px;
-        border: 1px solid #d0d0d0;
-        border-radius: 8px;
-        background: #fff;
-        text-align: left;
-        cursor: pointer;
+        align-items: center;
       }
 
-      .history-toggle.active {
-        border-color: #2e5cff;
-      }
-
-      .history-toggle.open {
-        background: #eef3ff;
-      }
-
-      .history-meta {
-        color: #666;
-        font-size: 13px;
-        white-space: nowrap;
-      }
-
-      .history-panel {
-        margin-top: 8px;
+      .task-title-block {
         display: grid;
-        gap: 8px;
-        padding: 12px;
-        border: 1px solid #d0d0d0;
-        border-radius: 8px;
-        background: #fff;
+        gap: 6px;
       }
 
-      .patch-list {
-        display: grid;
-        gap: 8px;
-      }
-
-      .split-view {
-        border: 1px solid #d0d0d0;
-        border-radius: 8px;
-        overflow: hidden;
-        background: #fff;
-      }
-
-      .split-head {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        background: #f3f4f6;
-        border-bottom: 1px solid #d0d0d0;
-      }
-
-      .split-head div {
-        padding: 10px 12px;
-        font-weight: 600;
-      }
-
-      .split-head div:first-child {
-        border-right: 1px solid #d0d0d0;
-      }
-
-      .split-body {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .split-body .code-block {
-        border-top: 0;
-        border-radius: 0;
-      }
-
-      .split-body .code-block:first-child {
-        border-right: 1px solid #d0d0d0;
-      }
-
-      .code-line.added {
-        background: #15391e;
-        color: #d9ffe3;
-      }
-
-      .code-line.removed {
-        background: #452021;
-        color: #ffd9db;
-      }
-
-      .patch-accordion {
-        border: 1px solid #d0d0d0;
-        border-radius: 8px;
-        background: #fafafa;
-      }
-
-      .patch-accordion[open] {
-        background: #fff;
-      }
-
-      .patch-summary {
-        padding: 10px 12px;
-        cursor: pointer;
-        font-family: "SFMono-Regular", "JetBrains Mono", monospace;
+      .task-meta {
+        color: var(--muted);
         font-size: 13px;
       }
 
-      .code-block {
+      .priority-chip.high {
+        background: #fde2db;
+        color: #8d2f15;
+      }
+
+      .priority-chip.medium {
+        background: #f6eed7;
+        color: #896816;
+      }
+
+      .priority-chip.low {
+        background: #deefea;
+        color: #236651;
+      }
+
+      .ghost-button {
+        max-width: 160px;
+        padding: 10px 14px;
+        background: #fff;
+      }
+
+      .empty-state {
+        padding: 26px;
+        display: grid;
+        gap: 8px;
+        text-align: center;
+      }
+
+      .debug-panel {
+        padding: 20px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .debug-section {
+        display: grid;
+        gap: 10px;
+      }
+
+      .debug-list {
         margin: 0;
-        padding: 12px;
-        overflow: auto;
-        border-top: 1px solid #d0d0d0;
-        border-radius: 0 0 8px 8px;
-        background: #111827;
-        color: #f3f4f6;
+        padding-left: 18px;
+        color: var(--muted);
+        display: grid;
+        gap: 6px;
         font-family: "SFMono-Regular", "JetBrains Mono", monospace;
-        font-size: 13px;
-        line-height: 1.5;
+        font-size: 12px;
       }
 
-      .code-line {
-        display: block;
-        white-space: pre;
+      @media (max-width: 1080px) {
+        .page-grid,
+        .board-content {
+          grid-template-columns: 1fr;
+        }
       }
 
-      @media (max-width: 720px) {
-        .container {
+      @media (max-width: 760px) {
+        .page-shell {
+          width: min(100vw - 20px, 100%);
+          padding-top: 20px;
+        }
+
+        #app-root,
+        #debug-root {
+          padding: 16px;
+        }
+
+        .summary-grid,
+        .field-grid,
+        .field-grid.compact {
           grid-template-columns: 1fr;
         }
 
-        .split-head,
-        .split-body {
-          grid-template-columns: 1fr;
+        .field-search {
+          grid-column: span 1;
         }
 
-        .split-head div:first-child,
-        .split-body .code-block:first-child {
-          border-right: 0;
+        .app-hero,
+        .task-card-top,
+        .task-card-bottom,
+        .filter-header,
+        .task-panel-header,
+        .debug-header {
+          flex-direction: column;
+          align-items: flex-start;
         }
       }
     </style>
   </head>
   <body>
-    <h1>Virtual DOM Diff &amp; Patch Demo</h1>
-
-    <div class="toolbar">
-      <button id="btn-patch">Patch</button>
-      <button id="btn-back" disabled>◀ 뒤로가기</button>
-      <button id="btn-forward" disabled>앞으로가기 ▶</button>
-    </div>
-
-    <div class="container">
-      <div class="panel-wrapper">
-        <h2>실제 영역 (읽기 전용)</h2>
-        <div class="panel" id="real-area"></div>
-      </div>
-      <div class="panel-wrapper">
-        <h2>테스트 영역 (편집 가능)</h2>
-        <div class="panel" id="test-area" contenteditable="true"></div>
+    <div class="page-shell">
+      <header class="page-intro">
+        <p>기존 Virtual DOM diff/patch 엔진 위에 구현한 Mini React 런타임과 테스트 페이지입니다.</p>
+      </header>
+      <div class="page-grid">
+        <main class="mount-card">
+          <div id="app-root"></div>
+        </main>
+        <aside class="mount-card">
+          <div id="debug-root"></div>
+        </aside>
       </div>
     </div>
-
-    <div class="history-section">
-      <h2>히스토리 스택</h2>
-      <ul class="history-list" id="history-list"></ul>
-    </div>
-
-    <script type="module">
-      import {
-        NodeType,
-        applyPatches,
-        diff,
-        domToVdom,
-        elementNode,
-        renderTo,
-        textNode,
-      } from "/src/lib.js";
-      import {
-        formatSnapshotComparison,
-        formatPatch,
-        formatPatchTitle,
-      } from "/src/ui-helper.js";
-      import { createHistory } from "/src/history.js";
-
-      const btnPatch = document.querySelector("#btn-patch");
-      const btnBack = document.querySelector("#btn-back");
-      const btnForward = document.querySelector("#btn-forward");
-      const realArea = document.querySelector("#real-area");
-      const testArea = document.querySelector("#test-area");
-      const historyList = document.querySelector("#history-list");
-      let openedHistoryIndex = null;
-
-      // 데모의 시작 화면을 실제 DOM 문자열이 아니라 vDOM 객체로 직접 만든다.
-      // elementNode / textNode를 조합해서 "초기 상태 스냅샷"을 구성한다.
-      const initialVdom = elementNode("div", {}, [
-        elementNode("h1", {}, [textNode("Hello")]),
-        elementNode("p", { style: "color: blue" }, [textNode("Virtual DOM Demo")]),
-        elementNode("ul", {}, [
-          elementNode("li", {}, [textNode("Item 1")]),
-          elementNode("li", {}, [textNode("Item 2")]),
-          elementNode("li", {}, [textNode("Item 3")]),
-        ]),
-      ]);
-
-      let history = createHistory(createSnapshot(initialVdom));
-
-      function normalizeText(value) {
-        return String(value ?? "").replace(/\s+/g, " ").trim();
-      }
-
-      function findTitleText(vnode) {
-        if (!vnode) {
-          return "";
-        }
-
-        if (vnode.nodeType === NodeType.TEXT) {
-          return normalizeText(vnode.value);
-        }
-
-        for (const child of vnode.children ?? []) {
-          const result = findTitleText(child);
-
-          if (result) {
-            return result;
-          }
-        }
-
-        return "";
-      }
-
-      // 히스토리에 넣는 단위는 "제목 + vDOM" 형태의 스냅샷이다.
-      // 실제 비교와 렌더링은 html 문자열이 아니라 이 vDOM 값을 기준으로 수행한다.
-      function createSnapshot(vdom) {
-        const title = findTitleText(vdom) || vdom?.type || "Snapshot";
-        return { title, vdom };
-      }
-
-      // 편집 가능한 영역은 contenteditable DOM이므로,
-      // 패널 안의 실제 루트 노드를 읽어서 vDOM 스냅샷으로 변환한다.
-      // contenteditable이 래퍼 div를 깨뜨릴 수 있으므로,
-      // div가 사라진 경우 모든 자식을 div로 다시 감싼다.
-      function readEditorSnapshot() {
-        const firstElement = Array.from(testArea.childNodes).find(
-          (node) => node.nodeType === Node.ELEMENT_NODE,
-        );
-
-        if (firstElement && firstElement.tagName.toLowerCase() === "div") {
-          return createSnapshot(domToVdom(firstElement));
-        }
-
-        const children = Array.from(testArea.childNodes)
-          .map((node) => domToVdom(node))
-          .filter((child) => child !== null);
-
-        return createSnapshot(elementNode("div", {}, children));
-      }
-
-      function renderSnapshotToEditor(snapshot) {
-        renderTo(testArea, snapshot.vdom);
-      }
-
-      function renderSnapshotToRealArea(snapshot) {
-        renderTo(realArea, snapshot.vdom);
-      }
-
-      function applySnapshotToRealArea(previousSnapshot, nextSnapshot) {
-        const currentRootDom = realArea.firstChild;
-
-        if (!currentRootDom) {
-          renderSnapshotToRealArea(nextSnapshot);
-          return;
-        }
-
-        const patches = diff(previousSnapshot.vdom, nextSnapshot.vdom);
-
-        if (patches.length === 0) {
-          return;
-        }
-
-        const nextRootDom = applyPatches(currentRootDom, patches);
-
-        if (nextRootDom === null) {
-          renderSnapshotToRealArea(nextSnapshot);
-        }
-      }
-
-      function createCodeBlock(lines) {
-        const pre = document.createElement("pre");
-        pre.className = "code-block";
-        lines.forEach(({ text, type }) => {
-          const row = document.createElement("span");
-          row.className = type ? `code-line ${type}` : "code-line";
-          row.textContent = text;
-          pre.append(row);
-        });
-
-        return pre;
-      }
-
-      function createRawCodeBlock(text) {
-        return createCodeBlock(
-          String(text).split("\n").map((line) => ({
-            text: line,
-            type: "",
-          })),
-        );
-      }
-
-      function getHistoryPatches(entries, index) {
-        if (index === 0) {
-          return [];
-        }
-
-        return diff(entries[index - 1].vdom, entries[index].vdom);
-      }
-
-      function renderHistory() {
-        const entries = history.entries();
-        const activeIndex = history.currentIndex();
-        const displayEntries = entries
-          .map((entry, index) => ({ entry, index }))
-          .filter(({ index }) => index > 0)
-          .reverse();
-
-        if (
-          openedHistoryIndex !== null &&
-          (openedHistoryIndex < 1 || !entries[openedHistoryIndex])
-        ) {
-          openedHistoryIndex = null;
-        }
-
-        historyList.innerHTML = "";
-
-        displayEntries.forEach(({ entry, index }, displayIndex) => {
-          const item = document.createElement("li");
-          const button = document.createElement("button");
-          const isOpen = openedHistoryIndex === index;
-
-          button.type = "button";
-          button.className = "history-toggle";
-          button.setAttribute("aria-expanded", String(isOpen));
-
-          if (index === activeIndex) {
-            button.classList.add("active");
-          }
-
-          if (isOpen) {
-            button.classList.add("open");
-          }
-
-          button.innerHTML = `
-            <span>${displayEntries.length - displayIndex}. ${entry.title}</span>
-            <span class="history-meta">${isOpen ? "닫기" : "열기"}</span>
-          `;
-          button.addEventListener("click", () => {
-            openedHistoryIndex = isOpen ? null : index;
-            renderHistory();
-          });
-
-          item.append(button);
-
-          if (isOpen) {
-            const panel = document.createElement("div");
-            panel.className = "history-panel";
-            const patches = getHistoryPatches(entries, index);
-            const { left, right } = formatSnapshotComparison(
-              index > 0 ? entries[index - 1].vdom : null,
-              entry.vdom,
-              patches,
-            );
-            const splitView = document.createElement("div");
-            splitView.className = "split-view";
-            splitView.innerHTML = `
-              <div class="split-head">
-                <div>이전 상태</div>
-                <div>현재 상태</div>
-              </div>
-            `;
-
-            const splitBody = document.createElement("div");
-            splitBody.className = "split-body";
-            splitBody.append(createCodeBlock(left), createCodeBlock(right));
-            splitView.append(splitBody);
-
-            panel.append(splitView);
-            const patchList = document.createElement("div");
-            patchList.className = "patch-list";
-
-            patches.forEach((patch, patchIndex) => {
-              const details = document.createElement("details");
-              details.className = "patch-accordion";
-
-              const summary = document.createElement("summary");
-              summary.className = "patch-summary";
-              summary.textContent = formatPatchTitle(patch, patchIndex);
-
-              details.append(summary, createRawCodeBlock(formatPatch(patch)));
-              patchList.append(details);
-            });
-
-            panel.append(patchList);
-            item.append(panel);
-          }
-
-          historyList.append(item);
-        });
-
-        btnBack.disabled = !history.canBack();
-        btnForward.disabled = !history.canForward();
-      }
-
-      function renderCurrent(updateEditor = true) {
-        const current = history.current();
-
-        renderSnapshotToRealArea(current);
-
-        if (updateEditor) {
-          renderSnapshotToEditor(current);
-        }
-
-        renderHistory();
-      }
-
-      btnPatch.addEventListener("click", () => {
-        const currentSnapshot = history.current();
-        const nextSnapshot = readEditorSnapshot();
-        const patches = diff(currentSnapshot.vdom, nextSnapshot.vdom);
-
-        if (patches.length === 0) {
-          renderHistory();
-          return;
-        }
-
-        applySnapshotToRealArea(currentSnapshot, nextSnapshot);
-        history.push(nextSnapshot);
-        renderSnapshotToEditor(nextSnapshot);
-        renderHistory();
-      });
-
-      btnBack.addEventListener("click", () => {
-        const currentSnapshot = history.current();
-        const previousSnapshot = history.back();
-
-        if (!previousSnapshot) {
-          return;
-        }
-
-        applySnapshotToRealArea(currentSnapshot, previousSnapshot);
-        renderSnapshotToEditor(previousSnapshot);
-        renderHistory();
-      });
-
-      btnForward.addEventListener("click", () => {
-        const currentSnapshot = history.current();
-        const nextSnapshot = history.forward();
-
-        if (!nextSnapshot) {
-          return;
-        }
-
-        applySnapshotToRealArea(currentSnapshot, nextSnapshot);
-        renderSnapshotToEditor(nextSnapshot);
-        renderHistory();
-      });
-
-      renderCurrent();
-    </script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

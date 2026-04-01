@@ -1,14 +1,22 @@
 export function setDomProp(element, key, value) {
   const normalizedKey = key === "class" ? "className" : key;
-  const attributeName = normalizedKey === "className" ? "class" : normalizedKey;
+  const propertyKey = normalizedKey.startsWith("on")
+    ? normalizedKey.toLowerCase()
+    : normalizedKey;
+  const attributeName = propertyKey === "className" ? "class" : propertyKey;
 
-  if (normalizedKey === "style" && value && typeof value === "object") {
+  if (propertyKey === "style" && value && typeof value === "object") {
     Object.assign(element.style, value);
     return;
   }
 
+  if (propertyKey.startsWith("on")) {
+    element[propertyKey] = typeof value === "function" ? value : null;
+    return;
+  }
+
   if (value === false || value == null) {
-    removeDomProp(element, normalizedKey);
+    removeDomProp(element, propertyKey);
     return;
   }
 
@@ -18,12 +26,12 @@ export function setDomProp(element, key, value) {
   }
 
   if (
-    normalizedKey in element &&
+    propertyKey in element &&
     typeof value !== "object" &&
     !attributeName.startsWith("data-") &&
     !attributeName.startsWith("aria-")
   ) {
-    element[normalizedKey] = value;
+    element[propertyKey] = value;
     return;
   }
 
@@ -32,15 +40,24 @@ export function setDomProp(element, key, value) {
 
 export function removeDomProp(element, key) {
   const normalizedKey = key === "class" ? "className" : key;
-  const attributeName = normalizedKey === "className" ? "class" : normalizedKey;
+  const propertyKey = normalizedKey.startsWith("on")
+    ? normalizedKey.toLowerCase()
+    : normalizedKey;
+  const attributeName = propertyKey === "className" ? "class" : propertyKey;
 
-  if (normalizedKey === "className") {
+  if (propertyKey.startsWith("on")) {
+    element[propertyKey] = null;
+    element.removeAttribute(attributeName);
+    return;
+  }
+
+  if (propertyKey === "className") {
     element.className = "";
-  } else if (normalizedKey === "value") {
+  } else if (propertyKey === "value") {
     element.value = "";
-  } else if (normalizedKey === "checked") {
+  } else if (propertyKey === "checked") {
     element.checked = false;
-  } else if (normalizedKey === "style") {
+  } else if (propertyKey === "style") {
     element.removeAttribute("style");
     return;
   }

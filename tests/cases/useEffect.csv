@@ -1,0 +1,4 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+useEffect,UE-01,deps-based effect execution,"an effect depends on one state value","the dependency changes","cleanup runs before the effect is executed again",high,passing,tests/runtime/useEffect.test.js
+useEffect,UE-02,skip when deps are unchanged,"an effect depends on one state value","an unrelated state changes","the effect does not re-run",high,passing,tests/runtime/useEffect.test.js
+useEffect,UE-03,root-only constraint,"a child function component tries to call useEffect","the root component renders that child","the runtime throws a root-only hook error",high,passing,tests/runtime/useEffect.test.js

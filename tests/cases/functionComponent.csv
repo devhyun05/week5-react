@@ -1,0 +1,3 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+functionComponent,FC-01,mount initial UI,"a root function component and container exist","mount is called","the initial vnode is rendered into the container and debug data is recorded",high,passing,tests/runtime/functionComponent.test.js
+functionComponent,FC-02,patch update flow,"the mounted component receives new props","update is called","only changed DOM nodes are patched and unaffected siblings are reused",high,passing,tests/runtime/functionComponent.test.js

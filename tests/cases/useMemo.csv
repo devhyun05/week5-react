@@ -1,0 +1,4 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+useMemo,UM-01,cache reuse for stable deps,"a memoized computation depends on count","an unrelated state changes","the cached value is reused without recomputing",high,passing,tests/runtime/useMemo.test.js
+useMemo,UM-02,recompute when deps change,"a memoized computation depends on count","count changes","the factory runs again and the UI reflects the new derived value",high,passing,tests/runtime/useMemo.test.js
+useMemo,UM-03,root-only constraint,"a child function component tries to call useMemo","the root component renders that child","the runtime throws a root-only hook error",high,passing,tests/runtime/useMemo.test.js

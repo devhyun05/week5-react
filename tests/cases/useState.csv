@@ -1,0 +1,4 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+useState,US-01,state persistence and functional update,"a root component stores count in state","the setter is called with an updater function","state is preserved across renders and the UI updates",high,passing,tests/runtime/useState.test.js
+useState,US-02,same value no-op,"a root component is mounted with initial state","the setter receives the current value again","no new render occurs",medium,passing,tests/runtime/useState.test.js
+useState,US-03,root-only constraint,"a child function component tries to call useState","the root component renders that child","the runtime throws a root-only hook error",high,passing,tests/runtime/useState.test.js
