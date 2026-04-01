@@ -127,5 +127,23 @@ pie showData
     "README 작성 (75분)" : 75
     "통합 (40분)" : 40
 
+```mermaid
+flowchart TD
+    A["컴포넌트 렌더 시작"] --> B["useMemo(factory, deps) 호출"]
+    B --> C["getHook('memo')로 현재 hook slot 조회"]
+    C --> D{"이전 deps와 현재 deps가 다른가?"}
+    D -- "예" --> E["factory() 실행"]
+    E --> F["hook.value에 계산 결과 저장"]
+    F --> G["hook.deps에 deps 복사 저장"]
+    D -- "아니오" --> H["이전 hook.value 재사용"]
+    G --> I["memoized value 반환"]
+    H --> I
+```
+
+이 프로젝트에서 `summary`의 factory는 `() => summarizeTasks(tasks)`이고 deps는 `[tasks]`이다. <br/>
+`visibleTasks`의 factory는 `() => filterTasks(tasks, { teamFilter, statusFilter, searchQuery, sortMode })`이고<br/>
+deps는 `[tasks, teamFilter, statusFilter, searchQuery, sortMode]`이다.<br/>
+즉 관련 값이 바뀌면 다시 계산하고, 바뀌지 않으면 이전에 저장한 `summary`와 `visibleTasks` 결과를 그대로 재사용한다.
+
 
  
