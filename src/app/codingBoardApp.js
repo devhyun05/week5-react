@@ -838,7 +838,7 @@ export function CodingBoardApp({
   return createElement(
     "div",
     { className: "board-app" },
-    createElement(Header, { summary }),
+    createElement(Header, { summary }), //usememo
     createElement(SummaryCards, { summary }),
     createElement(
       "div",
