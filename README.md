@@ -72,3 +72,7 @@ sequenceDiagram
     Flush->>Hook: 새 effect 실행
     Flush->>Hook: cleanup / deps 저장
 ```
+
+### useState() 실행 흐름
+<img width="1091" height="617" alt="스크린샷 189" src="https://github.com/user-attachments/assets/8ead585f-4740-4c8c-9900-1b3031137e54" />
+
