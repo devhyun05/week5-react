@@ -116,12 +116,13 @@ flowchart TD
     H --> I
 ```
 
-이 프로젝트에 대입하면 `summary`의 factory는 `() => summarizeTasks(tasks)`이고 deps는 `[tasks]`이며, `visibleTasks`의 factory는 `() => filterTasks(tasks, { teamFilter, statusFilter, searchQuery, sortMode })`이고 deps는 `[tasks, teamFilter, statusFilter, searchQuery, sortMode]`이다.  
-즉 `tasks`나 필터 값이 바뀌면 다시 계산하고, 바뀌지 않으면 이전에 저장해둔 `summary`와 `visibleTasks` 결과를 그대로 재사용한다.
+이 프로젝트에서 `summary`의 factory는 `() => summarizeTasks(tasks)`이고, deps는 `[tasks]`이다.  
+`visibleTasks`의 factory는 `() => filterTasks(tasks, { teamFilter, statusFilter, searchQuery, sortMode })`이고, deps는 `[tasks, teamFilter, statusFilter, searchQuery, sortMode]`이다.  
+즉 `tasks`나 필터 값이 바뀌면 다시 계산하고, 바뀌지 않으면 이전에 저장한 `summary`와 `visibleTasks` 결과를 그대로 재사용한다.
 
 ### 20~30초 발표 스크립트
 
-> 이 다이어그램은 우리 프로젝트의 `useMemo` 내부 동작을 보여줍니다. 먼저 `getHook`으로 memo가 저장될 slot을 찾고, 이전 deps와 현재 deps를 비교합니다. 우리 코드에서는 `summary`는 `tasks`가 바뀔 때만 다시 계산하고, `visibleTasks`는 `tasks`나 필터 조건이 바뀔 때만 다시 계산합니다. 값이 안 바뀌면 예전 결과를 그대로 재사용해서 불필요한 계산을 줄입니다.
+> 이 다이어그램은 우리 프로젝트의 `useMemo`가 내부에서 어떻게 동작하는지 보여줍니다. 먼저 `getHook`으로 memo가 저장될 slot을 찾고, 이전 deps와 현재 deps를 비교합니다. 우리 코드에서 `summary`는 `tasks`가 바뀔 때만 다시 계산하고, `visibleTasks`는 `tasks`나 필터 조건이 바뀔 때만 다시 계산합니다. 반대로 관련 값이 바뀌지 않으면 이전 계산 결과를 그대로 재사용해서 불필요한 계산을 줄입니다.
 
 ## 6. 코드 기준으로 보면 중요한 포인트
 
