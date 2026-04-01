@@ -96,3 +96,42 @@ sequenceDiagram
 | Concurrency-like / Load Test | 빠른 연속 실행, 큰 입력, 반복 churn에서도 안정적인지 확인 |
 
 <img width="697" height="329" alt="image" src="https://github.com/user-attachments/assets/83e078f0-7ac4-449b-a438-da6ba0bb0fd0" />
+
+gantt
+    title 수요 코딩회 작업 타임라인
+    dateFormat  YYYY-MM-DD HH:mm
+    axisFormat %H:%M
+    tickInterval 1hour
+
+    section 오전 정리
+    요구사항 이해 및 정리 :req, 2026-04-01 10:00, 2026-04-01 11:00
+    공부한 내용 나눔 :milestone, share1, 2026-04-01 11:00, 0m
+    개념 이해(Component / State / Hook) :learn1, 2026-04-01 11:10, 2026-04-01 12:15
+
+    section 오후 학습
+    공부한 내용 나눔 :sync1, 2026-04-01 13:10, 2026-04-01 13:40
+    질문 공부(Component / Rendering / State) :learn2, 2026-04-01 13:40, 2026-04-01 14:40
+    서로 이해한 부분 질문 :sync2, 2026-04-01 14:40, 2026-04-01 14:55
+    질문 공부(Function Component / useState) :learn3, 2026-04-01 15:00, 2026-04-01 16:00
+    서로 이해한 부분 질문 :sync3, 2026-04-01 16:00, 2026-04-01 16:10
+    질문 공부(useEffect / useMemo / Event / Update) :learn4, 2026-04-01 16:20, 2026-04-01 17:20
+    서로 이해한 부분 질문 :sync4, 2026-04-01 17:20, 2026-04-01 17:35
+
+    section 저녁 구현
+    각자 개인 구현 시작 :build1, 2026-04-01 19:30, 2026-04-01 20:30
+    추가 구현 :build2, 2026-04-01 20:30, 2026-04-01 21:00
+    base project 선정 :plan, 2026-04-01 21:00, 2026-04-01 21:30
+    README 작성 :docs, 2026-04-01 21:30, 2026-04-01 22:45
+    이해한 부분 설명 :share2, 2026-04-01 22:45, 2026-04-01 23:15
+    통합 :merge, 2026-04-01 23:20, 2026-04-02 00:00
+
+    classDef study fill:#FDE68A,stroke:#B45309,color:#451A03
+    classDef sync fill:#BFDBFE,stroke:#1D4ED8,color:#172554
+    classDef build fill:#BBF7D0,stroke:#15803D,color:#14532D
+    classDef docs fill:#E9D5FF,stroke:#7E22CE,color:#3B0764
+
+    class req,learn1,learn2,learn3,learn4 study
+    class share1,sync1,sync2,sync3,sync4,share2 sync
+    class build1,build2,plan,merge build
+    class docs docs
+
