@@ -116,10 +116,9 @@ flowchart TD
     H --> I
 ```
 
-이 프로젝트에서 `summary`의 factory는 `() => summarizeTasks(tasks)`이다.  
-deps는 `[tasks]`이기 때문에 `tasks`가 바뀔 때만 다시 계산한다.  
-`visibleTasks`의 factory는 `() => filterTasks(tasks, { teamFilter, statusFilter, searchQuery, sortMode })`이다.  
-deps는 `[tasks, teamFilter, statusFilter, searchQuery, sortMode]`이기 때문에 관련 값이 바뀔 때만 다시 계산하고, 아니면 이전 결과를 재사용한다.
+이 프로젝트에서 `summary`의 factory는 `() => summarizeTasks(tasks)`이고 deps는 `[tasks]`이다.  
+`visibleTasks`의 factory는 `() => filterTasks(tasks, { teamFilter, statusFilter, searchQuery, sortMode })`이고 deps는 `[tasks, teamFilter, statusFilter, searchQuery, sortMode]`이다.  
+즉 관련 값이 바뀌면 다시 계산하고, 바뀌지 않으면 이전에 저장한 `summary`와 `visibleTasks` 결과를 그대로 재사용한다.
 
 ### 20~30초 발표 스크립트
 
