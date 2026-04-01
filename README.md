@@ -1,4 +1,4 @@
-<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/70ce59da-21f0-4caa-a6ff-274b4cba11c9" />
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/ee9cdd58-8763-4f58-94d2-2958d7e1e588" />
 
 ### useState() 실행 흐름
 ```mermaid
