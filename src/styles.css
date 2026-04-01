@@ -1,0 +1,276 @@
+:root {
+  font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  color: #172030;
+  background:
+    radial-gradient(circle at top, rgba(255, 210, 150, 0.45), transparent 28%),
+    linear-gradient(180deg, #fcf8f1 0%, #f4f8ff 100%);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+.page {
+  padding: 32px 20px 64px;
+}
+
+.shell {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 20px;
+}
+
+.hero {
+  padding: 28px;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(252, 247, 238, 0.98));
+  border: 1px solid rgba(86, 89, 118, 0.08);
+  box-shadow: 0 24px 80px rgba(51, 63, 90, 0.12);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #af5d1d;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.hero p {
+  max-width: 720px;
+  margin: 14px 0 0;
+  color: #536176;
+  font-size: 1.03rem;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 20px;
+}
+
+.panel {
+  padding: 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(86, 89, 118, 0.08);
+  box-shadow: 0 18px 54px rgba(43, 56, 84, 0.08);
+}
+
+.panel h2,
+.panel h3 {
+  margin-top: 0;
+}
+
+.composer {
+  display: grid;
+  gap: 14px;
+}
+
+.composer-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #d8dce6;
+  border-radius: 16px;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus {
+  border-color: #db7a22;
+  box-shadow: 0 0 0 4px rgba(219, 122, 34, 0.12);
+}
+
+.primaryButton {
+  padding: 14px 18px;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(135deg, #d66c15, #b64d0c);
+  box-shadow: 0 12px 24px rgba(214, 108, 21, 0.22);
+}
+
+.subtleRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.filterGroup,
+.historyGroup {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip,
+.ghostButton {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #eef2f8;
+  color: #314155;
+}
+
+.chip.active {
+  background: #172030;
+  color: #fff;
+}
+
+.ghostButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.statCard {
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f7f9fc, #eef2f7);
+}
+
+.statLabel {
+  display: block;
+  font-size: 0.85rem;
+  color: #627182;
+}
+
+.statValue {
+  display: block;
+  margin-top: 6px;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.todoList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.todoCard {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: #fffaf5;
+  border: 1px solid #f0e2d4;
+}
+
+.todoCard.done {
+  background: #eff8f2;
+  border-color: #d5eadb;
+}
+
+.todoCheck {
+  width: 20px;
+  height: 20px;
+}
+
+.todoText {
+  min-width: 0;
+}
+
+.todoText strong {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+}
+
+.todoCard.done .todoText strong {
+  color: #58715c;
+  text-decoration: line-through;
+}
+
+.todoMeta {
+  display: block;
+  margin-top: 4px;
+  color: #6f7a88;
+  font-size: 0.86rem;
+}
+
+.dangerButton {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f8dde0;
+  color: #8a2833;
+}
+
+.emptyState {
+  padding: 22px;
+  border-radius: 18px;
+  background: #f5f7fb;
+  color: #5d6a7a;
+  text-align: center;
+}
+
+.noteList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 18px;
+  color: #536176;
+}
+
+.historySummary {
+  color: #58677a;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 860px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
