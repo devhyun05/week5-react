@@ -257,10 +257,10 @@ function Composer({ onAddTask }) {
     createElement("h2", {}, "작업 추가"),
     createElement(
       "div",
-      { className: "field-grid" },
+      { className: "field-grid composer-grid" },
       createElement(
         "label",
-        { className: "field" },
+        { className: "field field-wide" },
         createElement("span", {}, "작업명"),
         createElement("input", {
           id: "task-title-input",
@@ -340,7 +340,7 @@ function FilterBar({
     ),
     createElement(
       "div",
-      { className: "field-grid compact" },
+      { className: "field-grid compact filter-grid" },
       createElement(
         "label",
         { className: "field" },
