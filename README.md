@@ -97,41 +97,34 @@ sequenceDiagram
 
 <img width="697" height="329" alt="image" src="https://github.com/user-attachments/assets/83e078f0-7ac4-449b-a438-da6ba0bb0fd0" />
 
-gantt
-    title 수요 코딩회 작업 타임라인
-    dateFormat  YYYY-MM-DD HH:mm
-    axisFormat %H:%M
-    tickInterval 1hour
+## Development Cycles
 
-    section 오전 정리
-    요구사항 이해 및 정리 :req, 2026-04-01 10:00, 2026-04-01 11:00
-    공부한 내용 나눔 :milestone, share1, 2026-04-01 11:00, 0m
-    개념 이해(Component / State / Hook) :learn1, 2026-04-01 11:10, 2026-04-01 12:15
+```mermaid
+flowchart LR
+    A["10:00 - 11:00<br/><b>Requirement Analysis</b><br/>요구사항 이해 및 정리"]
+    B["11:10 - 12:15<br/><b>Core Concepts</b><br/>Component, State, Hook 개념 이해"]
+    C["13:10 - 14:55<br/><b>Question-driven Study</b><br/>Component, Rendering, State 질문 학습 + 공유"]
+    D["15:00 - 16:10<br/><b>Function Component / useState</b><br/>질문 학습 + 상호 설명"]
+    E["16:20 - 17:35<br/><b>useEffect / useMemo / Event Flow</b><br/>심화 학습 + Q&A"]
+    F["19:30 - 21:00<br/><b>Implementation</b><br/>개인 구현 + 추가 구현"]
+    G["21:00 - 22:45<br/><b>Project Direction</b><br/>Base project 선정 + README 작성"]
+    H["22:45 - 24:00<br/><b>Final Sharing & Integration</b><br/>서로 설명 후 통합"]
 
-    section 오후 학습
-    공부한 내용 나눔 :sync1, 2026-04-01 13:10, 2026-04-01 13:40
-    질문 공부(Component / Rendering / State) :learn2, 2026-04-01 13:40, 2026-04-01 14:40
-    서로 이해한 부분 질문 :sync2, 2026-04-01 14:40, 2026-04-01 14:55
-    질문 공부(Function Component / useState) :learn3, 2026-04-01 15:00, 2026-04-01 16:00
-    서로 이해한 부분 질문 :sync3, 2026-04-01 16:00, 2026-04-01 16:10
-    질문 공부(useEffect / useMemo / Event / Update) :learn4, 2026-04-01 16:20, 2026-04-01 17:20
-    서로 이해한 부분 질문 :sync4, 2026-04-01 17:20, 2026-04-01 17:35
+    A --> B --> C --> D --> E --> F --> G --> H
+    H -. feedback .-> C
+    G -. refine .-> F
+    E -. apply .-> F
 
-    section 저녁 구현
-    각자 개인 구현 시작 :build1, 2026-04-01 19:30, 2026-04-01 20:30
-    추가 구현 :build2, 2026-04-01 20:30, 2026-04-01 21:00
-    base project 선정 :plan, 2026-04-01 21:00, 2026-04-01 21:30
-    README 작성 :docs, 2026-04-01 21:30, 2026-04-01 22:45
-    이해한 부분 설명 :share2, 2026-04-01 22:45, 2026-04-01 23:15
-    통합 :merge, 2026-04-01 23:20, 2026-04-02 00:00
+    classDef phase fill:#F8FAFC,stroke:#334155,stroke-width:1.5px,color:#0F172A,rx:18,ry:18;
+    classDef study fill:#FEF3C7,stroke:#D97706,stroke-width:1.5px,color:#78350F;
+    classDef build fill:#DCFCE7,stroke:#16A34A,stroke-width:1.5px,color:#14532D;
+    classDef docs fill:#EDE9FE,stroke:#7C3AED,stroke-width:1.5px,color:#4C1D95;
+    classDef final fill:#DBEAFE,stroke:#2563EB,stroke-width:1.5px,color:#1E3A8A;
 
-    classDef study fill:#FDE68A,stroke:#B45309,color:#451A03
-    classDef sync fill:#BFDBFE,stroke:#1D4ED8,color:#172554
-    classDef build fill:#BBF7D0,stroke:#15803D,color:#14532D
-    classDef docs fill:#E9D5FF,stroke:#7E22CE,color:#3B0764
+    class A phase
+    class B,C,D,E study
+    class F build
+    class G docs
+    class H final
 
-    class req,learn1,learn2,learn3,learn4 study
-    class share1,sync1,sync2,sync3,sync4,share2 sync
-    class build1,build2,plan,merge build
-    class docs docs
-
+ 
