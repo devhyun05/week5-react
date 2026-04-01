@@ -1,150 +1,155 @@
-# DOM-VDOM 프로젝트
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/ee9cdd58-8763-4f58-94d2-2958d7e1e588" />
 
-## 프로젝트 개요
+### useState() 실행 흐름
+```mermaid
+sequenceDiagram
+    participant Render as render 중 useState()
+    participant Hook as hooks[index]
+    participant Setter as hook.setter
+    participant Root as root.update()
+    participant DOM as diff / applyPatches
 
-- DOM과 Virtual DOM 사이의 핵심 흐름을 직접 구현하고, 변경 사항을 안전하게 반영하는 과정을 하나의 결과물로 정리한 프로젝트입니다. 
-- `domToVdom`, `vdomToDom`, `diff`, `applyPatches`, `renderTo`, `createHistory`를 기능별로 분리해 구현
-- 최종적으로는 `history`와 UI를 연결해 상태 변화와 결과를 직접 확인할 수 있는 데모 화면까지 구성
+    Render->>Hook: slot 확보 또는 재사용
+    Render-->>Render: [state, setter] 반환
+    Setter->>Hook: hook.value 즉시 갱신
+    Setter->>Root: root.update()
+    Root->>Root: 루트 전체 rerender
+    Root->>DOM: 필요한 patch만 DOM 반영
+```
 
-## 기능 테스트
+### 훅 useEffect() 실행 흐름
 
-- 기능 구현은 모듈 단위로 나누어 검증했습니다. 각 기능이 독립적으로 올바르게 동작하는지 확인하는 동시에, 실제 사용 과정에서 발생할 수 있는 경계 조건도 함께 테스트
-- 구현 모듈: `domToVdom`, `vdomToDom`, `diff`, `applyPatches`, `renderTo`, `createHistory`
-- 테스트 범위: DOM-VDOM 변환, 변경 사항 계산, patch 적용, 렌더링, history 관리
-- 검증 포인트: 루트 교체, 잘못된 입력 처리, 엣지 케이스, undo/redo 흐름
+```mermaid
+sequenceDiagram
+    participant Render as render 중 useEffect()
+    participant Hook as hooks[index]
+    participant Queue as pendingEffects
+    participant DOM as renderTo / diff / applyPatches
+    participant Flush as flushEffects()
 
-<br/>
-<br/>
-
-### 기능 테스트 결과 화면
-<img width="826" height="736" alt="image" src="https://github.com/user-attachments/assets/e834d105-8bea-4135-a412-0837d94acf20" />
-
-
-
-## 협업 방식
-
-- 기능을 역할별로 분리해 병렬로 진행한 뒤, 브랜치와 PR을 통해 통합하는 방식으로 운영 
-- 위승철: `domToVdom`, `vdomToDom`, `renderTo`, 테스트 보강
-- 이진혁: `diff`, `applyPatches`
-- 양시준: `createHistory`, 데모 UI, 전체 통합
-
-
-
-<br/>
-<br/>
-
-### 브랜치와 PR 기반 협업 흐름
-<img width="1440" height="1050" alt="image" src="https://github.com/user-attachments/assets/d9cb1806-d6ed-492e-8f3f-2ee4fc561119" />
-
-<img width="4320" height="2328" alt="image" src="https://github.com/user-attachments/assets/1ead4ce6-22e6-45f3-8c2f-1a9034470a91" />
-
+    Render->>Hook: effect slot 확보
+    Render->>Queue: deps 변경 시 effect 예약
+    Render-->>DOM: next VDOM 생성 완료
+    DOM->>DOM: 실제 DOM 반영
+    DOM->>Flush: commit 완료
+    Flush->>Hook: 이전 cleanup 실행
+    Flush->>Hook: 새 effect 실행
+    Flush->>Hook: cleanup / deps 저장
+```
 
 
-<br/>
-<br/>
+1.useState는 상태를 컴포넌트 함수 내부에 직접 저장하지 않고, FunctionComponent 인스턴스의 hooks[] 배열에 저장한다.  
 
-### git 이슈 생성 스킬
-<img width="1504" height="546" alt="image" src="https://github.com/user-attachments/assets/47f94957-95b8-46d1-a492-ff348044a11f" />
-<img width="1504" height="576" alt="image" src="https://github.com/user-attachments/assets/1f02c1cd-0fbd-4e5e-8314-498b3dc64468" />
-<img width="1265" height="870" alt="image" src="https://github.com/user-attachments/assets/41c47bec-189f-4904-b492-dff079816d49" />
+2.예를 들어 BoardRoot()에서 첫 번째로 호출된 useState는 tasks 상태를 hooks[0]에 저장하며, setTasks()가 호출되면 이 슬롯의 값이 새로운 상태로 갱신된다.  
 
+3.이후 루트 update()가 실행되면 BoardRoot()는 다시 호출되지만, 렌더 시작 시 hook 순서를 0부터 다시 맞추기 때문에 첫 번째 useState는 다시 hooks[0]을 읽는다.  
 
+4.이 구조 덕분에 함수는 매번 새로 실행되어도 상태는 유지되며, 마지막에는 새 VDOM과 이전 VDOM을 비교해 변경된 DOM만 갱신한다.
 
-## 데모 및 결과 확인
+## 이번 주 구현 vs 실제 React
 
-- 최종 결과물은 기능 구현에서 끝나지 않고, 사용자가 상태 변화와 결과를 직접 확인할 수 있는 데모 화면까지 포함
-- `history`와 UI를 연결해 undo/redo 흐름을 시각적으로 확인할 수 있도록 구성했고, snapshot 기반 상태 관리가 실제로 어떻게 동작하는지 한눈에 파악
-
-# 테스트
-
-## History
+| 핵심 개념 | 이번 주 구현 (integration) | 실제 React |
+|---|---|---|
+| Component / State 구조 | `FunctionComponent`를 기반으로 컴포넌트 트리를 직접 관리했다. 앱 레벨에서는 state를 상위 컴포넌트에 모아두고, 이를 props로 자식 컴포넌트에 전달하는 방식으로 구조를 단순화했다. | 실제 React도 컴포넌트 단위로 UI를 구성하지만, state는 렌더 트리 전반에서 더 유연하게 관리되며 각 컴포넌트가 독립적으로 state를 가질 수 있다. |
+| Hooks | 렌더링 시 현재 컴포넌트와 hook 호출 순서를 추적하는 방식으로 `useState`, `useEffect`, `useMemo`를 직접 구현했다. | 실제 React는 동일한 개념을 기반으로 하지만, Fiber 아키텍처 위에서 더 정교한 Hook 관리 방식과 다양한 Hook, 그리고 여러 최적화 기법을 함께 제공한다. |
 
 
-| Test Case                        | Status |
-| -------------------------------- | ------ |
-| createHistory 함수 export          | ✅      |
-| 초기 snapshot 상태 설정                | ✅      |
-| undo / redo 이동                   | ✅      |
-| undo 후 새 snapshot push 시 redo 제거 | ✅      |
-| 외부 수정에도 내부 history 불변성 유지        | ✅      |
+
+## useMemo
+
+```mermaid
+flowchart TD
+    A["컴포넌트 렌더 시작"] --> B["useMemo(factory, deps) 호출"]
+    B --> C["getHook('memo')로 현재 hook slot 조회"]
+    C --> D{"이전 deps와 현재 deps가 다른가?"}
+    D -- "예" --> E["factory() 실행"]
+    E --> F["hook.value에 계산 결과 저장"]
+    F --> G["hook.deps에 deps 복사 저장"]
+    D -- "아니오" --> H["이전 hook.value 재사용"]
+    G --> I["memoized value 반환"]
+    H --> I
+```
+
+이 프로젝트에서 `summary`의 factory는 `() => summarizeTasks(tasks)`이고 deps는 `[tasks]`이다. <br/>
+`visibleTasks`의 factory는 `() => filterTasks(tasks, { teamFilter, statusFilter, searchQuery, sortMode })`이고<br/>
+deps는 `[tasks, teamFilter, statusFilter, searchQuery, sortMode]`이다.<br/>
+즉 관련 값이 바뀌면 다시 계산하고, 바뀌지 않으면 이전에 저장한 `summary`와 `visibleTasks` 결과를 그대로 재사용한다.
+
+1. Component / State 구조 차이
+```mermaid
+flowchart LR
+  subgraph A["이번 주 구현 (integration)"]
+    A1["FunctionComponent root"]
+    A2["상위 state 관리"]
+    A3["자식 컴포넌트"]
+    A4["props 전달"]
+    A1 --> A2
+    A2 --> A4
+    A4 --> A3
+  end
+
+  subgraph B["실제 React"]
+    B1["React component tree"]
+    B2["여러 컴포넌트가 각자 state 보유 가능"]
+    B3["state는 render tree 기준으로 관리"]
+    B1 --> B2
+    B1 --> B3
+  end
+
+```
+
+그림 2. Hooks 구조 차이
+```mermaid
+flowchart LR
+  subgraph A["이번 주 구현 (integration)"]
+    A1["currentComponent"]
+    A2["hookIndex"]
+    A3["hooks 배열"]
+    A1 --> A2
+    A2 --> A3
+  end
+
+  subgraph B["실제 React"]
+    B1["currentlyRenderingFiber"]
+    B2["Fiber.memoizedState"]
+    B3["Hook linked list"]
+    B4["더 정교한 render / commit 관리"]
+    B1 --> B2
+    B2 --> B3
+    B1 --> B4
+  end
+
+```
+
+## 테스트는 어떻게 했는지?
+
+테스트는 네 단계로 나눴다.
+
+| 분류 | 목적 |
+| --- | --- |
+| Unit Test | 각 모듈이 자기 책임을 제대로 수행하는지 확인 |
+| Contract Test | 공통 포맷과 계약이 깨지지 않는지 확인 |
+| Integration Test | patch, undo, redo까지 전체 흐름이 연결되는지 확인 |
+| Concurrency-like / Load Test | 빠른 연속 실행, 큰 입력, 반복 churn에서도 안정적인지 확인 |
+
+<img width="697" height="329" alt="image" src="https://github.com/user-attachments/assets/83e078f0-7ac4-449b-a438-da6ba0bb0fd0" />
+
+## Development Cycles
 
 
-## 2. DOM → VDOM
+조금 더 한국어 느낌으로 바꾸면 이 버전도 괜찮습니다.
 
 
-| Test Case        | Status |
-| ---------------- | ------ |
-| domToVdom export | ✅      |
-| Text node 변환     | ✅      |
-| Element 트리 변환    | ✅      |
-| comment node 무시  | ✅      |
+
+```mermaid
+pie showData
+    title 수요 코딩회 작업 비중 (총 640분)
+    "요구사항 정리 + 개념 학습 (305분)" : 305
+    "공유 + 질문 (100분)" : 100
+    "구현 (90분)" : 90
+    "베이스 프로젝트 선정 (30분)" : 30
+    "README 작성 (75분)" : 75
+    "통합 (40분)" : 40
 
 
-## 3. VDOM → DOM
-
-
-| Test Case                 | Status |
-| ------------------------- | ------ |
-| vdomToDom export          | ✅      |
-| Text vnode → Text DOM     | ✅      |
-| props + children 렌더링      | ✅      |
-| 중첩 vnode 재귀 처리            | ✅      |
-| invalid vnode → TypeError | ✅      |
-
-
-## 4. Diff
-
-
-| Test Case                     | Status |
-| ----------------------------- | ------ |
-| diff export                   | ✅      |
-| props / text / children 변경 감지 | ✅      |
-| node type 변경 처리               | ✅      |
-| invalid vnode → TypeError     | ✅      |
-
-
-## 5. Patch
-
-
-| Test Case                     | Status |
-| ----------------------------- | ------ |
-| diff export                   | ✅      |
-| props / text / children 변경 감지 | ✅      |
-| node type 변경 처리               | ✅      |
-| invalid vnode → TypeError     | ✅      |
-
-
-## 6. Render
-
-
-| Test Case         | Status |
-| ----------------- | ------ |
-| renderTo export   | ✅      |
-| 초기 렌더             | ✅      |
-| 전체 교체 렌더          | ✅      |
-| round-trip 일관성 유지 | ✅      |
-
-
-## 7. Edge Cases
-
-
-| Category          | Description                | Status |
-| ----------------- | -------------------------- | ------ |
-| Partial update    | 변경된 leaf만 patch 생성         | ✅      |
-| DOM reuse         | 형제 노드 identity 유지          | ✅      |
-| No-op             | 동일 vnode → 빈 patch         | ✅      |
-| Subtree removal   | 부모 삭제 시 안전 정리              | ✅      |
-| Root ops          | root replace/remove/add 처리 | ✅      |
-| Front insertion   | DOM 결과는 맞고 identity 일부 손실  | ✅      |
-| Reorder           | move 없이 index 기반 처리        | ✅      |
-| Invalid vnode     | 모든 API에서 TypeError         | ✅      |
-| Invalid patch     | 잘못된 patch → TypeError      | ✅      |
-| Invalid path      | 존재하지 않는 경로 무시              | ✅      |
-| Prop removal      | undefined 처리 및 DOM 반영      | ✅      |
-| Prop types        | boolean/null/undefined 처리  | ✅      |
-| class handling    | className canonicalize     | ✅      |
-| Attribute support | data-*, aria-*, style 등    | ✅      |
-| Void elements     | 자식 없이 처리                   | ✅      |
-| Empty text        | "", null → "" 정규화          | ✅      |
-
-
+ 
