@@ -74,7 +74,21 @@ sequenceDiagram
 ```
 
 ### useState() 실행 흐름
-<img width="1091" height="617" alt="스크린샷 189" src="https://github.com/user-attachments/assets/8ead585f-4740-4c8c-9900-1b3031137e54" />
+```mermaid
+sequenceDiagram
+    participant Render as render 중 useState()
+    participant Hook as hooks[index]
+    participant Setter as hook.setter
+    participant Root as root.update()
+    participant DOM as diff / applyPatches
+
+    Render->>Hook: slot 확보 또는 재사용
+    Render-->>Render: [state, setter] 반환
+    Setter->>Hook: hook.value 즉시 갱신
+    Setter->>Root: root.update()
+    Root->>Root: 루트 전체 rerender
+    Root->>DOM: 필요한 patch만 DOM 반영
+```
 
 1.useState는 상태를 컴포넌트 함수 내부에 직접 저장하지 않고, FunctionComponent 인스턴스의 hooks[] 배열에 저장한다.  
 
