@@ -1,0 +1,381 @@
+:root {
+  --bg: #f3f5f9;
+  --bg-accent: #eef4ff;
+  --surface: rgba(255, 255, 255, 0.88);
+  --surface-strong: #ffffff;
+  --text-main: #172033;
+  --text-muted: #667085;
+  --line: rgba(23, 32, 51, 0.1);
+  --primary: #2563eb;
+  --primary-strong: #1d4ed8;
+  --primary-soft: rgba(37, 99, 235, 0.1);
+  --success: #0f9d7a;
+  --success-soft: rgba(15, 157, 122, 0.1);
+  --danger: #e11d48;
+  --danger-soft: rgba(225, 29, 72, 0.08);
+  --shadow: 0 22px 50px rgba(15, 23, 42, 0.12);
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Avenir Next", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 26%),
+    radial-gradient(circle at right top, rgba(14, 165, 233, 0.14), transparent 24%),
+    linear-gradient(180deg, #f9fbff 0%, var(--bg) 55%, #edf1f8 100%);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+#app {
+  width: min(1120px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 36px 0 52px;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header-card,
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+}
+
+.header-card {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px;
+}
+
+.header-copy,
+.header-date-card,
+.section-head,
+.summary-stack,
+.summary-metric,
+.todo-content,
+.empty-state,
+.progress-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-copy {
+  gap: 10px;
+  flex: 1 1 auto;
+}
+
+.header-badge {
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.header-title {
+  margin: 0;
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  line-height: 1.04;
+}
+
+.header-subtitle,
+.section-copy,
+.todo-meta,
+.summary-note,
+.empty-copy,
+.header-date-note {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.header-date-card {
+  min-width: 260px;
+  justify-content: center;
+  gap: 8px;
+  padding: 22px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.12), rgba(14, 165, 233, 0.08));
+}
+
+.header-date-label {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.header-date-value {
+  font-size: 1.4rem;
+  line-height: 1.3;
+}
+
+.app-main {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.todo-column {
+  display: flex;
+  flex: 1 1 700px;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summary-card {
+  display: flex;
+  flex: 0 0 320px;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  padding: 24px;
+}
+
+.section-head {
+  gap: 6px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.todo-form {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.todo-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(23, 32, 51, 0.12);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+  color: var(--text-main);
+}
+
+.todo-input:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.18);
+  border-color: rgba(37, 99, 235, 0.45);
+}
+
+.primary-button,
+.toggle-button,
+.delete-button {
+  border: 0;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.primary-button {
+  flex: 0 0 auto;
+  padding: 0 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), #4f8cff);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 14px 24px rgba(37, 99, 235, 0.18);
+}
+
+.primary-button:hover,
+.toggle-button:hover,
+.delete-button:hover {
+  transform: translateY(-1px);
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.todo-item,
+.empty-state,
+.summary-metric {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-strong);
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+}
+
+.todo-item.is-completed {
+  background: rgba(15, 157, 122, 0.07);
+}
+
+.toggle-button {
+  flex: 0 0 72px;
+  min-height: 44px;
+  border-radius: 14px;
+  background: rgba(23, 32, 51, 0.06);
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.toggle-button.is-completed {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.todo-content {
+  flex: 1 1 auto;
+  gap: 4px;
+  min-width: 0;
+}
+
+.todo-text {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.todo-item.is-completed .todo-text {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.delete-button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.empty-state {
+  gap: 8px;
+  align-items: center;
+  padding: 28px 20px;
+  text-align: center;
+}
+
+.empty-title {
+  font-size: 1.05rem;
+}
+
+.summary-stack {
+  gap: 12px;
+}
+
+.summary-metric {
+  gap: 6px;
+  padding: 16px;
+}
+
+.summary-label,
+.progress-label {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.summary-value,
+.progress-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.progress-block {
+  gap: 12px;
+}
+
+.progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.progress-track {
+  overflow: hidden;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(23, 32, 51, 0.08);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), #22c55e);
+  transition: width 180ms ease;
+}
+
+@media (max-width: 900px) {
+  .header-card,
+  .app-main,
+  .todo-form,
+  .todo-item {
+    flex-direction: column;
+  }
+
+  .header-date-card,
+  .summary-card,
+  .primary-button,
+  .toggle-button,
+  .delete-button {
+    width: 100%;
+  }
+
+  .todo-item {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  #app {
+    width: min(100% - 18px, 1120px);
+    padding-top: 22px;
+  }
+
+  .header-card,
+  .card {
+    padding: 20px;
+    border-radius: 22px;
+  }
+}
