@@ -84,3 +84,15 @@ sequenceDiagram
 
 4.이 구조 덕분에 함수는 매번 새로 실행되어도 상태는 유지되며, 마지막에는 새 VDOM과 이전 VDOM을 비교해 변경된 DOM만 갱신한다.
 
+## 테스트는 어떻게 했는지?
+
+테스트는 네 단계로 나눴다.
+
+| 분류 | 목적 |
+| --- | --- |
+| Unit Test | 각 모듈이 자기 책임을 제대로 수행하는지 확인 |
+| Contract Test | 공통 포맷과 계약이 깨지지 않는지 확인 |
+| Integration Test | patch, undo, redo까지 전체 흐름이 연결되는지 확인 |
+| Concurrency-like / Load Test | 빠른 연속 실행, 큰 입력, 반복 churn에서도 안정적인지 확인 |
+
+<img width="697" height="329" alt="image" src="https://github.com/user-attachments/assets/83e078f0-7ac4-449b-a438-da6ba0bb0fd0" />
