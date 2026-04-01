@@ -1,0 +1,4 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+useMemo,UM-01,cache reuse for stable deps,"a memoized computation depends on count","an unrelated state changes","the cached value is reused without recomputing",high,passing,tests/runtime/useMemo.test.js
+useMemo,UM-02,recompute when deps change,"a memoized computation depends on count","count changes","the factory runs again and the UI reflects the new derived value",high,passing,tests/runtime/useMemo.test.js
+useMemo,UM-03,child memo cache isolation,"multiple child components memoize values independently","an unrelated update and one child dependency change occur","only the affected child recomputes and the other cache is reused",high,passing,tests/runtime/useMemo.test.js

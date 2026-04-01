@@ -1,0 +1,4 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+useEffect,UE-01,deps-based effect execution,"an effect depends on one state value","the dependency changes","cleanup runs before the effect is executed again",high,passing,tests/runtime/useEffect.test.js
+useEffect,UE-02,skip when deps are unchanged,"an effect depends on one state value","an unrelated state changes","the effect does not re-run",high,passing,tests/runtime/useEffect.test.js
+useEffect,UE-03,child effect lifecycle,"a child component owns an effect with deps","the prop changes and then the child unmounts","cleanup runs on re-run and again on unmount",high,passing,tests/runtime/useEffect.test.js

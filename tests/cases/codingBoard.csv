@@ -1,0 +1,7 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+codingBoard,CB-01,initial dashboard render,"the board mounts with default sample tasks","the first render completes","summary cards, task cards, and the debug panel are visible",high,passing,tests/integration/codingBoard.test.js
+codingBoard,CB-02,add and complete task flow,"the user enters a new task and toggles its status","input and click events are dispatched","the task list, summary, title, localStorage, and debug patch output all update",high,passing,tests/integration/codingBoard.test.js
+codingBoard,CB-03,filter search and sort,"the board contains multiple tasks from different teams and priorities","the user changes filters, search text, and sort mode","the visible list reflects the derived memoized result",high,passing,tests/integration/codingBoard.test.js
+codingBoard,CB-04,restore persisted tasks,"localStorage already contains saved tasks","the board mounts","the saved tasks are used as the initial state",medium,passing,tests/integration/codingBoard.test.js
+codingBoard,CB-05,deduplicate persisted task ids,"saved tasks already contain duplicate task ids","the board mounts and one duplicated item is toggled","only the clicked task changes and persisted ids are normalized",high,passing,tests/integration/codingBoard.test.js
+codingBoard,CB-06,advance task id after persisted data,"persisted user-created tasks already use task-1001","a new draft is created","the new task gets the next unique task id instead of colliding",high,passing,tests/integration/codingBoard.test.js

@@ -1,0 +1,5 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+useState,US-01,state persistence and functional update,"a root component stores count in state","the setter is called with an updater function","state is preserved across renders and the UI updates",high,passing,tests/runtime/useState.test.js
+useState,US-02,same value no-op,"a root component is mounted with initial state","the setter receives the current value again","no new render occurs",medium,passing,tests/runtime/useState.test.js
+useState,US-03,child component state isolation,"multiple child components each create local state","one child updates after a keyed list change","only that child state changes and each child keeps its own slot",high,passing,tests/runtime/useState.test.js
+useState,US-04,render-phase boundary,"useState is called outside any component render","the hook is invoked directly","the runtime throws a render-phase hook error",medium,passing,tests/runtime/useState.test.js

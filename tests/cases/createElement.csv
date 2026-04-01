@@ -1,0 +1,3 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+createElement,CE-01,primitive and nested children normalization,"strings, numbers, arrays, null, and booleans are passed as children","createElement builds an element vnode","children are flattened and only valid items are converted into text or element vnodes",high,passing,tests/runtime/createElement.test.js
+createElement,CE-02,function component resolution,"a stateless child component receives props and children","createElement is called with a function type","the function component is executed and returns a plain vnode tree",high,passing,tests/runtime/createElement.test.js

@@ -1,0 +1,3 @@
+feature,case_id,scenario,given,when,then,priority,status,test_file
+events,EV-01,DOM event registration,"a vnode contains onclick and oninput props","vdomToDom creates a DOM node","the handlers are attached and react to browser events",high,passing,tests/runtime/events.test.js
+events,EV-02,event replacement and removal,"a DOM node already has an event handler","applyPatches updates props with a new handler and then removes it","the latest handler is used and removed handlers stop firing",high,passing,tests/runtime/events.test.js
