@@ -36,7 +36,7 @@ function BoardRoot() {
   );
 
   useEffect(() => {
-    document.title = `남은 작업 ${summary.remaining}개 | 수요 코딩회 보드`; //usememo
+    document.title = `남은 작업 ${summary.remaining}개 | 수요 코딩회 보드`;
   }, [summary.remaining]);
 
   useEffect(() => {
@@ -90,8 +90,8 @@ function BoardRoot() {
         statusFilter,
         sortMode,
         searchQuery,
-        summary,  //usememo
-        visibleTasks,//usememo
+        summary,
+        visibleTasks,
       },
       actions,
     ),
