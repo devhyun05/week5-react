@@ -1,3 +1,5 @@
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/70ce59da-21f0-4caa-a6ff-274b4cba11c9" />
+
 ### useState() 실행 흐름
 ```mermaid
 sequenceDiagram
