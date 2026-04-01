@@ -53,7 +53,7 @@ sequenceDiagram
 
 
 
-## useEffect
+## useMemo
 
 ```mermaid
 flowchart TD
