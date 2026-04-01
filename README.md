@@ -1,3 +1,49 @@
+### useState() 실행 흐름
+```mermaid
+sequenceDiagram
+    participant Render as render 중 useState()
+    participant Hook as hooks[index]
+    participant Setter as hook.setter
+    participant Root as root.update()
+    participant DOM as diff / applyPatches
+
+    Render->>Hook: slot 확보 또는 재사용
+    Render-->>Render: [state, setter] 반환
+    Setter->>Hook: hook.value 즉시 갱신
+    Setter->>Root: root.update()
+    Root->>Root: 루트 전체 rerender
+    Root->>DOM: 필요한 patch만 DOM 반영
+```
+
+### 훅 useEffect() 실행 흐름
+
+```mermaid
+sequenceDiagram
+    participant Render as render 중 useEffect()
+    participant Hook as hooks[index]
+    participant Queue as pendingEffects
+    participant DOM as renderTo / diff / applyPatches
+    participant Flush as flushEffects()
+
+    Render->>Hook: effect slot 확보
+    Render->>Queue: deps 변경 시 effect 예약
+    Render-->>DOM: next VDOM 생성 완료
+    DOM->>DOM: 실제 DOM 반영
+    DOM->>Flush: commit 완료
+    Flush->>Hook: 이전 cleanup 실행
+    Flush->>Hook: 새 effect 실행
+    Flush->>Hook: cleanup / deps 저장
+```
+
+
+1.useState는 상태를 컴포넌트 함수 내부에 직접 저장하지 않고, FunctionComponent 인스턴스의 hooks[] 배열에 저장한다.  
+
+2.예를 들어 BoardRoot()에서 첫 번째로 호출된 useState는 tasks 상태를 hooks[0]에 저장하며, setTasks()가 호출되면 이 슬롯의 값이 새로운 상태로 갱신된다.  
+
+3.이후 루트 update()가 실행되면 BoardRoot()는 다시 호출되지만, 렌더 시작 시 hook 순서를 0부터 다시 맞추기 때문에 첫 번째 useState는 다시 hooks[0]을 읽는다.  
+
+4.이 구조 덕분에 함수는 매번 새로 실행되어도 상태는 유지되며, 마지막에는 새 VDOM과 이전 VDOM을 비교해 변경된 DOM만 갱신한다.
+
 ## 이번 주 구현 vs 실제 React
 
 | 핵심 개념 | 이번 주 구현 (integration) | 실제 React |
@@ -50,53 +96,6 @@ flowchart LR
   end
 
 ```
-
-##
-
-### 훅 useEffect() 실행 흐름
-
-```mermaid
-sequenceDiagram
-    participant Render as render 중 useEffect()
-    participant Hook as hooks[index]
-    participant Queue as pendingEffects
-    participant DOM as renderTo / diff / applyPatches
-    participant Flush as flushEffects()
-
-    Render->>Hook: effect slot 확보
-    Render->>Queue: deps 변경 시 effect 예약
-    Render-->>DOM: next VDOM 생성 완료
-    DOM->>DOM: 실제 DOM 반영
-    DOM->>Flush: commit 완료
-    Flush->>Hook: 이전 cleanup 실행
-    Flush->>Hook: 새 effect 실행
-    Flush->>Hook: cleanup / deps 저장
-```
-
-### useState() 실행 흐름
-```mermaid
-sequenceDiagram
-    participant Render as render 중 useState()
-    participant Hook as hooks[index]
-    participant Setter as hook.setter
-    participant Root as root.update()
-    participant DOM as diff / applyPatches
-
-    Render->>Hook: slot 확보 또는 재사용
-    Render-->>Render: [state, setter] 반환
-    Setter->>Hook: hook.value 즉시 갱신
-    Setter->>Root: root.update()
-    Root->>Root: 루트 전체 rerender
-    Root->>DOM: 필요한 patch만 DOM 반영
-```
-
-1.useState는 상태를 컴포넌트 함수 내부에 직접 저장하지 않고, FunctionComponent 인스턴스의 hooks[] 배열에 저장한다.  
-
-2.예를 들어 BoardRoot()에서 첫 번째로 호출된 useState는 tasks 상태를 hooks[0]에 저장하며, setTasks()가 호출되면 이 슬롯의 값이 새로운 상태로 갱신된다.  
-
-3.이후 루트 update()가 실행되면 BoardRoot()는 다시 호출되지만, 렌더 시작 시 hook 순서를 0부터 다시 맞추기 때문에 첫 번째 useState는 다시 hooks[0]을 읽는다.  
-
-4.이 구조 덕분에 함수는 매번 새로 실행되어도 상태는 유지되며, 마지막에는 새 VDOM과 이전 VDOM을 비교해 변경된 DOM만 갱신한다.
 
 ## 테스트는 어떻게 했는지?
 
