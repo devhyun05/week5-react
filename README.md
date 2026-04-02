@@ -17,7 +17,7 @@ sequenceDiagram
     Root->>DOM: 필요한 patch만 DOM 반영
 ```
 
-### 훅 useEffect() 실행 흐름
+### useEffect() 실행 흐름
 
 ```mermaid
 sequenceDiagram
