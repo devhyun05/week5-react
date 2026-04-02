@@ -37,15 +37,6 @@ sequenceDiagram
     Flush->>Hook: cleanup / dependency array 저장
 ```
 
-
-1.useState는 상태를 컴포넌트 함수 내부에 직접 저장하지 않고, FunctionComponent 인스턴스의 hooks[] 배열에 저장한다.  
-
-2.예를 들어 BoardRoot()에서 첫 번째로 호출된 useState는 tasks 상태를 hooks[0]에 저장하며, setTasks()가 호출되면 이 슬롯의 값이 새로운 상태로 갱신된다.  
-
-3.이후 루트 update()가 실행되면 BoardRoot()는 다시 호출되지만, 렌더 시작 시 hook 순서를 0부터 다시 맞추기 때문에 첫 번째 useState는 다시 hooks[0]을 읽는다.  
-
-4.이 구조 덕분에 함수는 매번 새로 실행되어도 상태는 유지되며, 마지막에는 새 VDOM과 이전 VDOM을 비교해 변경된 DOM만 갱신한다.
-
 ## 이번 주 구현 vs 실제 React
 
 | 핵심 개념 | 이번 주 구현 (integration) | 실제 React |
