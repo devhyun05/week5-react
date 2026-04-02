@@ -128,9 +128,6 @@ flowchart LR
 ## Development Cycles
 
 
-조금 더 한국어 느낌으로 바꾸면 이 버전도 괜찮습니다.
-
-
 
 ```mermaid
 pie showData
