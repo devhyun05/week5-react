@@ -37,13 +37,6 @@ sequenceDiagram
     Flush->>Hook: cleanup / dependency array 저장
 ```
 
-## 이번 주 구현 vs 실제 React
-
-| 핵심 개념 | 이번 주 구현 (integration) | 실제 React |
-|---|---|---|
-| Component / State 구조 | `FunctionComponent`를 기반으로 컴포넌트 트리를 직접 관리했다. 앱 레벨에서는 state를 상위 컴포넌트에 모아두고, 이를 props로 자식 컴포넌트에 전달하는 방식으로 구조를 단순화했다. | 실제 React도 컴포넌트 단위로 UI를 구성하지만, state는 렌더 트리 전반에서 더 유연하게 관리되며 각 컴포넌트가 독립적으로 state를 가질 수 있다. |
-| Hooks | 렌더링 시 현재 컴포넌트와 hook 호출 순서를 추적하는 방식으로 `useState`, `useEffect`, `useMemo`를 직접 구현했다. | 실제 React는 동일한 개념을 기반으로 하지만, Fiber 아키텍처 위에서 더 정교한 Hook 관리 방식과 다양한 Hook, 그리고 여러 최적화 기법을 함께 제공한다. |
-
 
 
 ## useMemo
@@ -61,10 +54,21 @@ flowchart TD
     H --> I
 ```
 
+
 이 프로젝트에서 `summary`의 factory는 `() => summarizeTasks(tasks)`이고 deps는 `[tasks]`이다. <br/>
 `visibleTasks`의 factory는 `() => filterTasks(tasks, { teamFilter, statusFilter, searchQuery, sortMode })`이고<br/>
 deps는 `[tasks, teamFilter, statusFilter, searchQuery, sortMode]`이다.<br/>
 즉 관련 값이 바뀌면 다시 계산하고, 바뀌지 않으면 이전에 저장한 `summary`와 `visibleTasks` 결과를 그대로 재사용한다.
+
+
+## 이번 주 구현 vs 실제 React
+
+| 핵심 개념 | 이번 주 구현 (integration) | 실제 React |
+|---|---|---|
+| Component / State 구조 | `FunctionComponent`를 기반으로 컴포넌트 트리를 직접 관리했다. 앱 레벨에서는 state를 상위 컴포넌트에 모아두고, 이를 props로 자식 컴포넌트에 전달하는 방식으로 구조를 단순화했다. | 실제 React도 컴포넌트 단위로 UI를 구성하지만, state는 렌더 트리 전반에서 더 유연하게 관리되며 각 컴포넌트가 독립적으로 state를 가질 수 있다. |
+| Hooks | 렌더링 시 현재 컴포넌트와 hook 호출 순서를 추적하는 방식으로 `useState`, `useEffect`, `useMemo`를 직접 구현했다. | 실제 React는 동일한 개념을 기반으로 하지만, Fiber 아키텍처 위에서 더 정교한 Hook 관리 방식과 다양한 Hook, 그리고 여러 최적화 기법을 함께 제공한다. |
+
+
 
 1. Component / State 구조 차이
 ```mermaid
